@@ -107,9 +107,18 @@
                     var model = models[i];
                     var modelItem = document.createElement('div');
                     modelItem.classList.add('model-item');
+
                     var modelLink = document.createElement('a');
-                    modelLink.href = model;
+                    modelLink.href = "#"; // 保留 # 作為鏈接
                     modelLink.textContent = model;
+
+                    // 為每個模型項目添加onclick事件
+                    modelLink.onclick = (function(modelUrl) {
+                        return function() {
+                            loadModel(modelUrl);
+                        };
+                    })(model);
+
                     modelItem.appendChild(modelLink);
                     modelList.appendChild(modelItem);
                 }
