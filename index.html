@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Asset Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <style>
+        /* 添加一些簡單的樣式來使搜尋框更顯眼 */
+        #searchBox {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .model-item {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>3D Asset Library</h1>
+    <input type="text" id="searchBox" placeholder="Search models..." onkeyup="filterModels()">
+
+    <div id="model-list">
+        {% for model_file in model_files %}
+            <div class="model-item">
+                <a href="#" onclick="loadModel('{{ url_for('download_file', filename=model_file) }}')">{{ model_file }}</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="renderCanvasWrapper">
+        <canvas id="renderCanvas"></canvas>
+    </div>
+
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+        var scene = new BABYLON.Scene(engine);
+
+        // 設置相機和光源
+        var camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 10, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        camera.maxZ = 1000000;
+
+        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+
+        // 初始場景
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        // 響應式調整
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+
+        // 加載模型
+        function loadModel(modelUrl) {
+            // 清除之前的模型
+            scene.meshes.forEach(mesh => {
+                mesh.dispose();
+            });
+
+            BABYLON.SceneLoader.ImportMesh("", modelUrl, "", scene, function (meshes) {
+                // 調整相機到新加載模型的位置
+                if (meshes.length > 0) {
+                    scene.createDefaultCameraOrLight(true, true, true);
+                    scene.activeCamera.alpha += Math.PI;
+                    camera.target = new BABYLON.Vector3(0, 0, 0);
+                } else {
+                    console.error("No meshes were loaded.");
+                }
+            }, function (progress) {
+                console.log("Loading: " + (progress.loaded / progress.total * 100).toFixed(2) + "%");
+            }, function (scene, message, exception) {
+                console.error("Failed to load model:", message, exception);
+            });
+        }
+
+        // 搜索功能
+        function filterModels() {
+            var input, filter, list, items, text;
+            input = document.getElementById('searchBox');
+            filter = input.value.toUpperCase();
+            list = document.getElementById('model-list');
+            items = list.getElementsByClassName('model-item');
+
+            for (var i = 0; i < items.length; i++) {
+                text = items[i].textContent || items[i].innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
