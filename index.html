@@ -25,17 +25,7 @@
     <input type="text" id="searchBox" placeholder="Search models..." onkeyup="filterModels()">
 
     <div id="model-list">
-        <!-- 靜態模型列表，手動添加所有模型文件 -->
-        <div class="model-item">
-            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/FinalBaseMesh.obj" target="_blank">FinalBaseMesh.obj</a>
-        </div>
-        <div class="model-item">
-            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/Iphone seceond version finished.obj" target="_blank">Iphone seceond version finished.obj</a>
-        </div>
-        <div class="model-item">
-            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/Sniper_Stand.obj" target="_blank">Sniper_Stand.obj</a>
-        </div>
-        <!-- 添加更多模型項目 -->
+        <!-- 模型列表將由 JavaScript 自動生成 -->
     </div>
 
     <div id="renderCanvasWrapper">
@@ -104,6 +94,27 @@
                 }
             }
         }
+
+        // 加載模型列表
+        fetch('models.json')
+            .then(response => response.json())
+            .then(data => {
+                var modelList = document.getElementById('model-list');
+                var models = data.models;
+
+                // 使用for迴圈將每個模型加到列表中
+                for (var i = 0; i < models.length; i++) {
+                    var model = models[i];
+                    var modelItem = document.createElement('div');
+                    modelItem.classList.add('model-item');
+                    var modelLink = document.createElement('a');
+                    modelLink.href = model;
+                    modelLink.textContent = model;
+                    modelItem.appendChild(modelLink);
+                    modelList.appendChild(modelItem);
+                }
+            })
+            .catch(error => console.error('Error loading models:', error));
     </script>
 </body>
 </html>
