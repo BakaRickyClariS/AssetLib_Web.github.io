@@ -25,11 +25,17 @@
     <input type="text" id="searchBox" placeholder="Search models..." onkeyup="filterModels()">
 
     <div id="model-list">
-        {% for model_file in model_files %}
-            <div class="model-item">
-                <a href="#" onclick="loadModel('{{ url_for('download_file', filename=model_file) }}')">{{ model_file }}</a>
-            </div>
-        {% endfor %}
+        <!-- 靜態模型列表，手動添加所有模型文件 -->
+        <div class="model-item">
+            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/FinalBaseMesh.obj" target="_blank">FinalBaseMesh.obj</a>
+        </div>
+        <div class="model-item">
+            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/Iphone seceond version finished.obj" target="_blank">Iphone seceond version finished.obj</a>
+        </div>
+        <div class="model-item">
+            <a href="https://github.com/BakaRickyClariS/AssetLib_Web.github.io/raw/main/static/models/Sniper_Stand.obj" target="_blank">Sniper_Stand.obj</a>
+        </div>
+        <!-- 添加更多模型項目 -->
     </div>
 
     <div id="renderCanvasWrapper">
